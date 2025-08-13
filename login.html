@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>MiniSite Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; }
+        .container { max-width: 350px; margin: 60px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #ccc; }
+        h2 { text-align: center; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 8px; margin: 8px 0; }
+        button { width: 100%; padding: 10px; background: #007bff; color: #fff; border: none; border-radius: 4px; }
+        .switch { text-align: center; margin-top: 10px; }
+        .flag { background: #e6ffe6; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container" id="register">
+        <h2>Créer un compte</h2>
+        <input type="text" id="reg-username" placeholder="Nom d'utilisateur" required>
+        <input type="password" id="reg-password" placeholder="Mot de passe" required>
+        <button onclick="register()">S'inscrire</button>
+        <div class="switch">
+            <a href="#" onclick="showLogin()">Déjà un compte ? Se connecter</a>
+        </div>
+        <div id="reg-msg"></div>
+    </div>
+
+    <div class="container" id="login" style="display:none;">
+        <h2>Connexion</h2>
+        <input type="text" id="login-username" placeholder="Nom d'utilisateur" required>
+        <input type="password" id="login-password" placeholder="Mot de passe" required>
+        <button onclick="login()">Se connecter</button>
+        <div class="switch">
+            <a href="#" onclick="showRegister()">Créer un compte</a>
+        </div>
+        <div id="login-msg"></div>
+    </div>
+
+    <div class="container" id="flag-page" style="display:none;">
+        <h2>Bienvenue !</h2>
+        <div class="flag">FLAG{Bravo_vous_etes_connecte!}</div>
+        <button onclick="logout()">Déconnexion</button>
+    </div>
+
+    <script>
+        function showLogin() {
+            document.getElementById('register').style.display = 'none';
+            document.getElementById('login').style.display = '';
+            document.getElementById('login-msg').textContent = '';
+        }
+        function showRegister() {
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('register').style.display = '';
+            document.getElementById('reg-msg').textContent = '';
+        }
+        function register() {
+            const u = document.getElementById('reg-username').value.trim();
+            const p = document.getElementById('reg-password').value;
+            if (!u || !p) {
+                document.getElementById('reg-msg').textContent = "Veuillez remplir tous les champs.";
+                return;
+            }
+            if (localStorage.getItem('user_' + u)) {
+                document.getElementById('reg-msg').textContent = "Ce nom d'utilisateur existe déjà.";
+                return;
+            }
+            localStorage.setItem('user_' + u, p);
+            document.getElementById('reg-msg').textContent = "Compte créé ! Vous pouvez vous connecter.";
+            setTimeout(showLogin, 1000);
+        }
+        function login() {
+            const u = document.getElementById('login-username').value.trim();
+            const p = document.getElementById('login-password').value;
+            if (!u || !p) {
+                document.getElementById('login-msg').textContent = "Veuillez remplir tous les champs.";
+                return;
+            }
+            const stored = localStorage.getItem('user_' + u);
+            if (stored && stored === p) {
+                document.getElementById('login').style.display = 'none';
+                document.getElementById('flag-page').style.display = '';
+            } else {
+                document.getElementById('login-msg').textContent = "Identifiants incorrects.";
+            }
+        }
+        function logout() {
+            document.getElementById('flag-page').style.display = 'none';
+            showLogin();
+        }
+    </script>
+</body>
+</html>
